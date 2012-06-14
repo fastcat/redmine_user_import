@@ -1,4 +1,3 @@
-require 'fastercsv'
 require 'tempfile'
 
 class UserImportController < ApplicationController
@@ -42,7 +41,7 @@ class UserImportController < ApplicationController
     # display content
     @samples = []
     i = 0
-    FasterCSV.foreach(tmpfile.path, {:headers=>true, :encoding=>encoding, :quote_char=>wrapper, :col_sep=>splitter}) do |row|
+    CSV.foreach(tmpfile.path, {:headers=>true, :encoding=>encoding, :quote_char=>wrapper, :col_sep=>splitter}) do |row|
       @samples[i] = row
       i += 1
     end # do
@@ -85,7 +84,7 @@ class UserImportController < ApplicationController
     @failed_count = 0
     @failed_rows = Hash.new
 
-    FasterCSV.foreach(tmpfile.path, {:headers=>true, :encoding=>encoding, :quote_char=>wrapper, :col_sep=>splitter}) do |row|
+    CSV.foreach(tmpfile.path, {:headers=>true, :encoding=>encoding, :quote_char=>wrapper, :col_sep=>splitter}) do |row|
       user = User.find_by_login(row[attrs_map["login"]])
       unless user
         user = User.new(:status => 1, :mail_notification => 0, :language => Setting.default_language)
@@ -102,7 +101,7 @@ class UserImportController < ApplicationController
         @failed_rows[@handle_count + 1] = row
       end
 
-      if (!user.save_without_validation!)
+      if (!user.save(:validate => false))
         @failed_count += 1
         @failed_rows[@handle_count + 1] = row
       end
