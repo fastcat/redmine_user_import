@@ -87,7 +87,7 @@ class UserImportController < ApplicationController
     CSV.foreach(tmpfile.path, {:headers=>true, :encoding=>encoding, :quote_char=>wrapper, :col_sep=>splitter}) do |row|
       user = User.find_by_login(row[attrs_map["login"]])
       unless user
-        user = User.new(:status => 1, :mail_notification => 0, :language => Setting.default_language)
+        user = User.new(:status => 1, :language => Setting.default_language)
         user.login = row[attrs_map["login"]]
         user.password = row[attrs_map["password"]]
         user.password_confirmation = row[attrs_map["password"]]
