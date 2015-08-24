@@ -1,4 +1,5 @@
 require 'tempfile'
+require 'csv'
 
 class UserImportController < ApplicationController
   unloadable
