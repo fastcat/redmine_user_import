@@ -92,8 +92,12 @@ class UserImportController < ApplicationController
       unless user
         user = User.new(:status => 1, :language => Setting.default_language)
         user.login = row[attrs_map["login"]]
-        user.password = row[attrs_map["password"]]
-        user.password_confirmation = row[attrs_map["password"]]
+        if row[attrs_map["password"]]
+          user.password = row[attrs_map["password"]]
+          user.password_confirmation = row[attrs_map["password"]]
+        else
+          user.generate_password = true
+        end
         user.lastname = row[attrs_map["lastname"]]
         user.firstname = row[attrs_map["firstname"]]
         user.mail = row[attrs_map["mail"]]
